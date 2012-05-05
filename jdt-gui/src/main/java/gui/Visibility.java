@@ -8,11 +8,11 @@ import delaunay_triangulation.Delaunay_Triangulation;
 
 public class Visibility {
 	Vector<Point_dt> _section;
-	Vector<Triangle_dt> _tr;
+	public Vector<Triangle_dt> _tr;
 	Point_dt _p1, _p2, last = null;
 	Delaunay_Triangulation _dt;
 
-	Visibility(Delaunay_Triangulation dt) {
+	public Visibility(Delaunay_Triangulation dt) {
 		_dt = dt;
 		_section = new Vector<Point_dt>();
 	}
