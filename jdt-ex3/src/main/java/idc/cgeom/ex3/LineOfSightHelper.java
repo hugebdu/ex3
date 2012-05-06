@@ -6,6 +6,9 @@ import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
 
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
@@ -82,8 +85,58 @@ public class LineOfSightHelper
 
     public boolean isBlockedBy(Point_dt p1, Point_dt p2, Triangle_dt triangle)
     {
-        //TODO: implement
-        throw new UnsupportedOperationException("implement");
+        double A = triangle.p1().y() * (triangle.p2().z() - triangle.p3().z()) + triangle.p2().y() * (triangle.p3().z() - triangle.p1().z()) + triangle.p3().y() * (triangle.p1().z() - triangle.p2().z());
+        double B = triangle.p1().z() * (triangle.p2().x() - triangle.p3().x()) + triangle.p2().z() * (triangle.p3().x() - triangle.p1().x()) + triangle.p3().z() * (triangle.p1().x() - triangle.p2().x());
+        double C = triangle.p1().x() * (triangle.p2().y() - triangle.p3().y()) + triangle.p2().x() * (triangle.p3().y() - triangle.p1().y()) + triangle.p3().x() * (triangle.p1().y() - triangle.p2().y());
+        double D = -1 * (triangle.p1().x() * (triangle.p2().y() * triangle.p3().z() - triangle.p3().y() * triangle.p2().z()) + triangle.p2().x() * (triangle.p3().y() * triangle.p1().z() - triangle.p1().y() * triangle.p3().z()) + triangle.p3().x() * (triangle.p1().y() * triangle.p2().z() - triangle.p2().y() * triangle.p1().z()));
+
+        double p1_dist  = (A * p1.x() + B * p1.y() + C * p1.z() + D) / Math.sqrt(Math.pow(A,2) + Math.pow(B,2) + Math.pow(C,2));
+        double p2_dist  = (A * p2.x() + B * p2.y() + C * p2.z() + D) / Math.sqrt(Math.pow(A,2) + Math.pow(B,2) + Math.pow(C,2));
+
+        if(p1_dist * p2_dist > 0) // points are on the same side of the plane
+            return false;
+
+        double t = -1 * (D + A*p1.x() + B * p1.y() + C * p1.z()) / (A * (p2.x() - p1.x()) + B *(p2.y() - p1.y())+ C *(p2.z() - p1.z()));
+
+        Point_dt intersection_p = new Point_dt(
+                p1.x() + (p2.x() - p1.x()) * t,
+                p1.y() + (p2.y() - p1.y()) * t,
+                p1.z() + (p2.z() - p1.z()) * t);
+
+        Point3d p = new Point3d(intersection_p.x(),intersection_p.y(),intersection_p.z());
+        Point3d a = new Point3d(triangle.p1().x(),triangle.p1().y(),triangle.p1().z());
+        Point3d b = new Point3d(triangle.p2().x(),triangle.p2().y(),triangle.p2().z());
+        Point3d c = new Point3d(triangle.p3().x(),triangle.p3().y(),triangle.p3().z());
+
+        return pointInTriangle(p,a,b,c);
+    }
+
+    private boolean sameSide(Point3d p1 ,Point3d p2, Point3d a,Point3d b)
+    {
+        Vector3d vectorBA = new Vector3d(b.x - a.x,b.y - a.y,b.z - a.z);
+        Vector3d vectorP1A = new Vector3d(p1.x - a.x,p1.y - a.y,p1.z - a.z);
+        Vector3d vectorP2A = new Vector3d(p2.x - a.x,p2.y - a.y,p2.z - a.z);
+
+        Vector3d cp1 = new Vector3d();
+        cp1.cross(vectorBA,vectorP1A);
+
+        Vector3d cp2 = new Vector3d();
+        cp2.cross(vectorBA, vectorP2A);
+
+        if (cp1.dot(cp2)>=0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean pointInTriangle(Point3d p,Point3d  a,Point3d b,Point3d c)
+    {
+        if (sameSide(p,a, b,c)
+            && sameSide(p,b, a,c)
+            && sameSide(p,c, a,b))
+            return true;
+        else
+            return false;
     }
 
     public static LineOfSightHelper on(Delaunay_Triangulation triangulation)
