@@ -101,7 +101,7 @@ public class LineOfSightHelperTest
                 new Point_dt(2, 0)
         ).isBlockedBy(p1,p2,t);
 
-        assertTrue(!blocked);
+        assertFalse(blocked);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class LineOfSightHelperTest
                 new Point_dt(2, 0)
         ).isBlockedBy(p1,p2,t);
 
-        assertTrue(!blocked);
+        assertFalse(blocked);
     }
 
     private Delaunay_Triangulation load(String fileName) throws Exception
