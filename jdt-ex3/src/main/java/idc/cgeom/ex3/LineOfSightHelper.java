@@ -123,20 +123,14 @@ public class LineOfSightHelper
         Vector3d cp2 = new Vector3d();
         cp2.cross(vectorBA, vectorP2A);
 
-        if (cp1.dot(cp2)>=0)
-            return true;
-        else
-            return false;
+        return cp1.dot(cp2) >= 0;
     }
 
     private boolean pointInTriangle(Point3d p,Point3d  a,Point3d b,Point3d c)
     {
-        if (sameSide(p,a, b,c)
-            && sameSide(p,b, a,c)
-            && sameSide(p,c, a,b))
-            return true;
-        else
-            return false;
+        return sameSide(p, a, b, c)
+                && sameSide(p, b, a, c)
+                && sameSide(p, c, a, b);
     }
 
     public static LineOfSightHelper on(Delaunay_Triangulation triangulation)
