@@ -3,6 +3,7 @@ package idc.cgeom.ex3;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.Iterables;
 import delaunay_triangulation.Point_dt;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,6 +104,7 @@ public class DefaultAdjacencyMatrixTest
         AdjacencyMatrix matrix = makeMatrix();
         
         Guard wrappedGuard1 = find(matrix.guards(), thatWraps(GUARD1));
+        Guard wrappedGuard2 = find(matrix.guards(), thatWraps(GUARD2));
         
         AdjacencyMatrix reduced = matrix.reducedBy(wrappedGuard1);
 
@@ -118,7 +120,38 @@ public class DefaultAdjacencyMatrixTest
         assertGuardsFor(diamonds, DIAMOND3, GUARD2, GUARD3);
 
         assertDiamondsFor(guards, GUARD2, DIAMOND3);
-        assertDiamondsFor(guards, GUARD3, DIAMOND2, DIAMOND3);
+        assertDiamondsFor(guards, GUARD3, DIAMOND3);
+        
+        reduced = reduced.reducedBy(wrappedGuard2);
+        
+        guards = reduced.guards();
+        diamonds = reduced.diamonds();
+        
+        assertThat(guards.size(), is(1));
+        assertThat(diamonds.size(), is(0));
+
+        assertThat(Iterables.getLast(guards).guardingDiamonds().size(), is(0));
+    }
+
+    @Test
+    public void testReducedByMultiple() throws Exception
+    {
+        AdjacencyMatrix matrix = makeMatrix();
+
+        Guard wrappedGuard1 = find(matrix.guards(), thatWraps(GUARD1));
+        Guard wrappedGuard3 = find(matrix.guards(), thatWraps(GUARD3));
+
+        AdjacencyMatrix reduced = matrix.reducedBy(wrappedGuard1, wrappedGuard3);
+
+        Collection<Guard> guards = reduced.guards();
+        Collection<Diamond> diamonds = reduced.diamonds();
+
+        assertThat(guards.size(), is(1));
+        assertThat(transform(guards, unwrap), hasItems(GUARD2));
+
+        assertThat(diamonds.size(), is(0));
+        
+        assertThat(Iterables.getLast(guards).guardingDiamonds().size(), is(0));
     }
 
     private Predicate<PointWrapper> thatWraps(final Point_dt point_dt)

@@ -1,21 +1,22 @@
 package idc.cgeom.ex3;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import delaunay_triangulation.Point_dt;
 
 import java.util.Map;
 
-import static com.google.common.base.Predicates.in;
-import static com.google.common.base.Predicates.not;
+import static com.google.common.base.Predicates.*;
 import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Maps.filterKeys;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.String.format;
-import static java.util.Collections.singleton;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +41,21 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
     private DefaultAdjacencyMatrix(boolean[][] matrix, Map<Guard, Integer> guards, Map<Diamond, Integer> diamonds)
     {
         this.matrix = matrix;
-        this.guards = ImmutableBiMap.copyOf(guards);
-        this.diamonds = ImmutableBiMap.copyOf(diamonds);
+        this.guards = rewrapKeys(guards, Guard.class);
+        this.diamonds = rewrapKeys(diamonds, Diamond.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends PointWrapper> ImmutableBiMap<T, Integer> rewrapKeys(Map<T, Integer> wrappers, Class<T> wrapperClass)
+    {
+        ImmutableBiMap.Builder<T, Integer> builder = ImmutableBiMap.builder();
+        for (Map.Entry<T, Integer> entry : wrappers.entrySet())
+            builder.put((T) (wrapperClass.equals(Diamond.class) ?
+                    new DiamondImpl(entry.getKey().getPointDt()) :
+                    new GuardImpl(entry.getKey().getPointDt())),
+                    entry.getValue());
+        
+        return builder.build();
     }
 
     @Override
@@ -57,11 +71,17 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
     }
 
     @Override
-    public AdjacencyMatrix reducedBy(Guard guard)
+    public AdjacencyMatrix reducedBy(ImmutableSet<Guard> reducedGuards)
     {
-        return new DefaultAdjacencyMatrix(matrix, 
-                filterKeys(guards, not(in(singleton(guard)))),
-                filterKeys(diamonds, not(guardedBy(guard))));
+        return new DefaultAdjacencyMatrix(matrix,
+                filterKeys(guards, not(in(reducedGuards))),
+                filterKeys(diamonds, not(guardedByAny(reducedGuards))));
+    }
+
+    @Override
+    public AdjacencyMatrix reducedBy(Guard ... guards)
+    {
+        return reducedBy(ImmutableSet.copyOf(guards));
     }
 
     private boolean[][] initMatrix(LineOfSightHelper helper)
@@ -102,13 +122,12 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
 
     abstract class PointWrapperImpl<T extends PointWrapper> implements PointWrapper
     {
-
         protected final Point_dt point_dt;
+
         protected PointWrapperImpl(Point_dt point_dt)
         {
             this.point_dt = point_dt;
         }
-
         @Override
         public Point_dt getPointDt()
         {
@@ -155,20 +174,21 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
         }
 
         protected abstract ImmutableCollection<T> calculateRelated();
+
     }
+
     class GuardImpl extends PointWrapperImpl<Diamond> implements Guard
     {
-
         public GuardImpl(Point_dt point_dt)
         {
             super(point_dt);
         }
+
         @Override
         protected ImmutableCollection<Diamond> calculateRelated()
         {
             return ImmutableList.copyOf(filter(diamonds.keySet(), guardedBy(this)));
         }
-
         @Override
         public ImmutableCollection<Diamond> guardingDiamonds()
         {
@@ -180,21 +200,20 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
         {
             return format("Guard{x=%s,y=%s,z=%s}", point_dt.x(), point_dt.y(), point_dt.z());
         }
-
     }
+
     class DiamondImpl extends PointWrapperImpl<Guard> implements Diamond
     {
-
         public DiamondImpl(Point_dt point_dt)
         {
             super(point_dt);
         }
+
         @Override
         public ImmutableCollection<Guard> guardedByGuards()
         {
             return related();
         }
-
         @Override
         public String toString()
         {
@@ -206,6 +225,7 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
         {
             return ImmutableList.copyOf(filter(guards.keySet(), isGuarding(this)));
         }
+
     }
 
     private Predicate<Guard> isGuarding(final Diamond diamond)
@@ -230,5 +250,17 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
                 return matrix[diamonds.get(diamond)][guards.get(guard)];
             }
         };
+    }
+
+    private Predicate<Diamond> guardedByAny(ImmutableSet<Guard> reducedGuards)
+    {
+        return or(transform(reducedGuards, new Function<Guard, Predicate<Diamond>>()
+        {
+            @Override
+            public Predicate<Diamond> apply(Guard input)
+            {
+                return guardedBy(input);
+            }
+        }));
     }
 }

@@ -8,7 +8,6 @@ import delaunay_triangulation.Triangle_dt;
 
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
