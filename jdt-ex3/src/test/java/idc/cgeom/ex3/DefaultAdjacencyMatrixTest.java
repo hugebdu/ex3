@@ -5,10 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
 import delaunay_triangulation.Point_dt;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -16,18 +14,16 @@ import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static idc.cgeom.ex3.AdjacencyMatrix.*;
-import static java.util.Arrays.asList;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: daniels
  * Date: 5/6/12
  */
-public class DefaultAdjacencyMatrixTest
+public class DefaultAdjacencyMatrixTest extends BaseAdjacencyTest
 {
     private static final Function<PointWrapper, Point_dt> unwrap = new Function<PointWrapper, Point_dt>()
     {
@@ -45,29 +41,7 @@ public class DefaultAdjacencyMatrixTest
         {
             return input.getPointDt();
         }
-    };    
-
-    private static final Point_dt GUARD1 = new Point_dt(0, 1);
-    private static final Point_dt GUARD2 = new Point_dt(0, 2);
-    private static final Point_dt GUARD3 = new Point_dt(0, 3);
-
-    private static final Point_dt DIAMOND1 = new Point_dt(1, 0);
-    private static final Point_dt DIAMOND2 = new Point_dt(2, 0);
-    private static final Point_dt DIAMOND3 = new Point_dt(3, 0);
-
-    private final LineOfSightHelper helperMock = mock(LineOfSightHelper.class);
-
-    @Before
-    public void setUp() throws Exception
-    {
-        reset(helperMock);
-        
-        wireSeenPair(GUARD1, DIAMOND1);
-        wireSeenPair(GUARD1, DIAMOND2);
-        wireSeenPair(GUARD2, DIAMOND3);
-        wireSeenPair(GUARD3, DIAMOND2);
-        wireSeenPair(GUARD3, DIAMOND3);
-    }
+    };
 
     @Test
     public void testGuards() throws Exception
@@ -154,18 +128,6 @@ public class DefaultAdjacencyMatrixTest
         assertThat(Iterables.getLast(guards).guardingDiamonds().size(), is(0));
     }
 
-    private Predicate<PointWrapper> thatWraps(final Point_dt point_dt)
-    {
-        return new Predicate<PointWrapper>()
-        {
-            @Override
-            public boolean apply(@Nullable PointWrapper input)
-            {
-                return input.getPointDt() == point_dt;
-            }
-        };
-    }
-
     private void assertGuardsFor(Collection<Diamond> diamonds, Point_dt diamond, Point_dt ... guards)
     {
         Map<Point_dt, Diamond> asMap = uniqueIndex(diamonds, extractPointDt);
@@ -182,19 +144,5 @@ public class DefaultAdjacencyMatrixTest
         Collection<Diamond> guardedDiamonds = asMap.get(guard).guardingDiamonds();
         assertThat(guardedDiamonds.size(), is(diamonds.length));
         assertThat(transform(guardedDiamonds, unwrap), hasItems(diamonds));
-    }
-
-    private void wireSeenPair(Point_dt p1, Point_dt p2)
-    {
-        when(helperMock.seenByEachOther(p1, p2)).thenReturn(true);
-        when(helperMock.seenByEachOther(p2, p1)).thenReturn(true);
-    }
-
-    private DefaultAdjacencyMatrix makeMatrix()
-    {
-        return new DefaultAdjacencyMatrix(
-                asList(GUARD1, GUARD2, GUARD3),
-                asList(DIAMOND1, DIAMOND2, DIAMOND3),
-                helperMock);
     }
 }

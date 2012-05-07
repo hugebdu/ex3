@@ -198,7 +198,7 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
         @Override
         public String toString()
         {
-            return format("Guard{x=%s,y=%s,z=%s}", point_dt.x(), point_dt.y(), point_dt.z());
+            return format("Guard{x=%s, y=%s, z=%s}", point_dt.x(), point_dt.y(), point_dt.z());
         }
     }
 
@@ -217,7 +217,7 @@ public class DefaultAdjacencyMatrix implements AdjacencyMatrix
         @Override
         public String toString()
         {
-            return format("Diamond{x=%s,y=%s,z=%s}", point_dt.x(), point_dt.y(), point_dt.z());
+            return format("Diamond{x=%s, y=%s, z=%s}", point_dt.x(), point_dt.y(), point_dt.z());
         }
 
         @Override
