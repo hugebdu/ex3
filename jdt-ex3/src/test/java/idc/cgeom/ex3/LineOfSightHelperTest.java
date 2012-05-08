@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -19,8 +20,9 @@ import static org.junit.Assert.*;
  */
 public class LineOfSightHelperTest
 {
-
     private static final String TEST_DATA_TSIN = "/test_data.tsin";
+    private static final String GUARDS_DATA_TSIN = "/G1.tsin";
+    private static final String DIAMONDS_DATA_TSIN = "/C1.tsin";
 
     @Test
     public void testGetInBetweenRouteTriangles_SourceAndTargetInTheSameTriangle() throws Exception
@@ -49,7 +51,7 @@ public class LineOfSightHelperTest
     @Test
     public void testGetInBetweenRouteTriangles_FromFile() throws Exception
     {
-        Delaunay_Triangulation triangulation = load(TEST_DATA_TSIN);
+        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
 
         Point_dt source = new Point_dt(137, 437);
         Point_dt target = new Point_dt(508, 310);
@@ -62,6 +64,22 @@ public class LineOfSightHelperTest
         
         assertThat(result.size(), is(visibility._tr.size()));
         assertThat(result, hasItems(visibility._tr.toArray(new Triangle_dt[visibility._tr.size()])));
+    }
+
+    // WTF: Handle halfplane triangles
+    @Test
+    public void testIsBlockedBy_FromFile() throws Exception
+    {
+        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
+        Visibility visibility = new Visibility(triangulation);
+        LineOfSightHelper helper = LineOfSightHelper.on(triangulation);
+
+        List<Point_dt> guards = loadPoints(GUARDS_DATA_TSIN);
+        List<Point_dt> diamonds = loadPoints(DIAMONDS_DATA_TSIN);
+
+        for (Point_dt guard : guards)
+            for (Point_dt diamond : diamonds)
+                assertThat(helper.seenByEachOther(diamond, guard), is(visibility.los(diamond, guard)));
     }
 
     @Test
@@ -123,8 +141,14 @@ public class LineOfSightHelperTest
 
         assertFalse(blocked);
     }
+    
+    private List<Point_dt> loadPoints(String fileName) throws Exception
+    {
+        String file = getClass().getResource(fileName).getFile();
+        return newArrayList(Delaunay_Triangulation.read_file(file));
+    }
 
-    private Delaunay_Triangulation load(String fileName) throws Exception
+    private Delaunay_Triangulation loadTriangulation(String fileName) throws Exception
     {
         String file = getClass().getResource(fileName).getFile();
         return new Delaunay_Triangulation(file);        
