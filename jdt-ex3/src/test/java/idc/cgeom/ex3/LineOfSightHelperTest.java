@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.String.format;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -66,22 +64,6 @@ public class LineOfSightHelperTest extends BaseTest
         
         assertThat(result.size(), is(visibility._tr.size()));
         assertThat(result, hasItems(visibility._tr.toArray(new Triangle_dt[visibility._tr.size()])));
-    }
-
-    // WTF: Handle halfplane triangles
-    @Test
-    public void testIsBlockedBy_FromFile() throws Exception
-    {
-        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
-        Visibility visibility = new Visibility(triangulation);
-        DefaultLineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
-
-        List<Point_dt> guards = loadPoints(GUARDS_DATA_TSIN);
-        List<Point_dt> diamonds = loadPoints(DIAMONDS_DATA_TSIN);
-
-        for (Point_dt guard : guards)
-            for (Point_dt diamond : diamonds)
-                assertThat(format("Failure on points {%s, %s}", guard, diamond), helper.seenByEachOther(diamond, guard), is(visibility.los(diamond, guard)));
     }
 
     @Test
