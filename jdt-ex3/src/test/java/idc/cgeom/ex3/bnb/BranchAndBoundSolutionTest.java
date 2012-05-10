@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import delaunay_triangulation.Point_dt;
 import idc.cgeom.ex3.AdjacencyMatrix;
-import idc.cgeom.ex3.BaseAdjacencyTest;
+import idc.cgeom.ex3.BaseTest;
 import idc.cgeom.ex3.bnb.BranchAndBoundSolution.Node;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
  * User: daniels
  * Date: 5/7/12
  */
-public class BranchAndBoundSolutionTest extends BaseAdjacencyTest
+public class BranchAndBoundSolutionTest extends BaseTest
 {
     private final BranchAndBoundSolution solution = new BranchAndBoundSolution();
 

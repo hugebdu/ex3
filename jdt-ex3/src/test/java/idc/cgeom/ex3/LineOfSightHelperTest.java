@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  * User: daniels
  * Date: 5/5/12
  */
-public class LineOfSightHelperTest
+public class LineOfSightHelperTest extends BaseTest
 {
     private static final String TEST_DATA_TSIN = "/test_data.tsin";
     private static final String GUARDS_DATA_TSIN = "/G1.tsin";
@@ -142,18 +142,6 @@ public class LineOfSightHelperTest
         ).isBlockedBy(p1,p2,t);
 
         assertFalse(blocked);
-    }
-    
-    private List<Point_dt> loadPoints(String fileName) throws Exception
-    {
-        String file = getClass().getResource(fileName).getFile();
-        return newArrayList(Delaunay_Triangulation.read_file(file));
-    }
-
-    private Delaunay_Triangulation loadTriangulation(String fileName) throws Exception
-    {
-        String file = getClass().getResource(fileName).getFile();
-        return new Delaunay_Triangulation(file);        
     }
 
     private DefaultLineOfSightHelper makeHelper(Point_dt ... points)

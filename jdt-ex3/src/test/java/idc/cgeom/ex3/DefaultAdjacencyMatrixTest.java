@@ -1,7 +1,6 @@
 package idc.cgeom.ex3;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
 import delaunay_triangulation.Point_dt;
@@ -23,7 +22,7 @@ import static org.junit.Assert.*;
  * User: daniels
  * Date: 5/6/12
  */
-public class DefaultAdjacencyMatrixTest extends BaseAdjacencyTest
+public class DefaultAdjacencyMatrixTest extends BaseTest
 {
     private static final Function<PointWrapper, Point_dt> unwrap = new Function<PointWrapper, Point_dt>()
     {

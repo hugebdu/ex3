@@ -19,7 +19,7 @@ import static org.mockito.Mockito.reset;
  * User: daniels
  * Date: 5/10/12
  */
-public class SolutionsBadCaseTest extends BaseAdjacencyTest
+public class SolutionsBadCaseTest extends BaseTest
 {
     final InversedGreedySolution inversedGreedySolution = new InversedGreedySolution()
     {

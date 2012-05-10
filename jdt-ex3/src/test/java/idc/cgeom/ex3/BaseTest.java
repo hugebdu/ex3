@@ -1,20 +1,21 @@
 package idc.cgeom.ex3;
 
 import com.google.common.base.Predicate;
+import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import org.junit.Before;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: daniels
  * Date: 5/7/12
  */
-public abstract class BaseAdjacencyTest
+public abstract class BaseTest
 {
     protected static final Point_dt GUARD1 = new Point_dt(0, 1);
     protected static final Point_dt GUARD2 = new Point_dt(0, 2);
@@ -65,5 +66,16 @@ public abstract class BaseAdjacencyTest
                 return input.getPointDt() == point_dt;
             }
         };
+    }
+
+    protected List<Point_dt> loadPoints(String fileName) throws Exception
+    {
+        return IOHelper.readPoints(getClass().getResourceAsStream(fileName));
+    }
+
+    protected Delaunay_Triangulation loadTriangulation(String fileName) throws Exception
+    {
+        String file = getClass().getResource(fileName).getFile();
+        return new Delaunay_Triangulation(file);
     }
 }
