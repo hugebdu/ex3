@@ -19,9 +19,14 @@ public abstract class BaseAdjacencyTest
     protected static final Point_dt GUARD1 = new Point_dt(0, 1);
     protected static final Point_dt GUARD2 = new Point_dt(0, 2);
     protected static final Point_dt GUARD3 = new Point_dt(0, 3);
+
     protected static final Point_dt DIAMOND1 = new Point_dt(1, 0);
     protected static final Point_dt DIAMOND2 = new Point_dt(2, 0);
     protected static final Point_dt DIAMOND3 = new Point_dt(3, 0);
+    protected static final Point_dt DIAMOND4 = new Point_dt(4, 0);
+    protected static final Point_dt DIAMOND5 = new Point_dt(5, 0);
+    protected static final Point_dt DIAMOND6 = new Point_dt(6, 0);
+
     protected final DefaultLineOfSightHelper helperMock = mock(DefaultLineOfSightHelper.class);
 
     @Before
