@@ -2,6 +2,8 @@ package idc.cgeom.ex3;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
@@ -13,9 +15,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Iterables.toArray;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
@@ -46,6 +50,11 @@ public abstract class IOHelper
     public static List<Point_dt> readPoints(URL file) throws IOException
     {
         return readPoints(file.openStream());
+    }
+
+    public static Point_dt[] readPointsToArray(URL file) throws IOException
+    {
+        return toArray(readPoints(file), Point_dt.class);
     }
 
     public static List<Point_dt> readPoints(File file) throws IOException
