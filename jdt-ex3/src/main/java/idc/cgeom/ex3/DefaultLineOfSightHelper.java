@@ -134,8 +134,8 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
 
         //Point3d intersection_p1 = getIntersectionPoint(pp1,pp2,a,b,c);
 
-        return pointInTriangleB(p,a,b,c);
-
+        return pointInTriangle3(p,a,b,c);
+        //return pointInTriangleB(p,a,b,c);
         //return pointInTriangle(p,a,b,c);
     }
 
@@ -173,6 +173,29 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
             return null;                // прямая параллельна плоскости
     }
 
+    //from http://dxdy.ru/topic52519.html
+    private boolean pointInTriangle3(Point3d p , Point3d a,Point3d b,Point3d c)
+    {
+        Vector3d vectorAB = new Vector3d(b.x - a.x,b.y - a.y,b.z - a.z); //v0
+        Vector3d vectorAC = new Vector3d(c.x - a.x,c.y - a.y,c.z - a.z); //v1
+        Vector3d vectorPA = new Vector3d(a.x - p.x,a.y - p.y,a.z - p.z); //v2
+        Vector3d vectorPB = new Vector3d(b.x - p.x,b.y - p.y,b.z - p.z); //v2
+        Vector3d vectorPC = new Vector3d(c.x - p.x,c.y - p.y,c.z - p.z); //v2
+
+        Vector3d PAxPB = new Vector3d();
+        PAxPB.cross(vectorPA,vectorPB);
+
+        Vector3d PBxPC = new Vector3d();
+        PBxPC.cross(vectorPB,vectorPC);
+
+        Vector3d PCxPA = new Vector3d();
+        PCxPA.cross(vectorPC,vectorPA);
+
+        Vector3d ABxAC = new Vector3d();
+        ABxAC.cross(vectorAB,vectorAC);
+
+        return PAxPB.length() + PBxPC.length() +  PCxPA.length() <= ABxAC.length();
+    }
     // From http://www.blackpawn.com/texts/pointinpoly/default.html
     private boolean pointInTriangleB(Point3d p , Point3d a,Point3d b,Point3d c)
     {

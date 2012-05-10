@@ -93,10 +93,10 @@ public class LineOfSightHelperTest extends BaseTest
         Visibility visibility = new Visibility(triangulation);
         DefaultLineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
 
-        Point_dt guard = new Point_dt(99792.0,1073355.0,30.0);
-        Point_dt diamond = new Point_dt(130836.0,1028292.0,5.0);
+        Point_dt guard = new Point_dt(174172.0,1008059.0,5.0);
+        Point_dt diamond = new Point_dt(149170.0,1043466.0,30.0);
 
-        assertFalse(helper.seenByEachOther(diamond, guard));
+        assertTrue(helper.seenByEachOther(diamond, guard));
     }
 
     @Test
