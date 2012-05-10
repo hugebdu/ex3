@@ -87,6 +87,19 @@ public class LineOfSightHelperTest extends BaseTest
     }
 
     @Test
+    public void testIsBlockedBy_SpecificPoint() throws Exception
+    {
+        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
+        Visibility visibility = new Visibility(triangulation);
+        DefaultLineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
+
+        Point_dt guard = new Point_dt(99792.0,1073355.0,30.0);
+        Point_dt diamond = new Point_dt(130836.0,1028292.0,5.0);
+
+        assertFalse(helper.seenByEachOther(diamond, guard));
+    }
+
+    @Test
     public void testIsBlockedBy_NotBlocked1() throws Exception
     {
         Point_dt p1 = new Point_dt(1,1,31);
