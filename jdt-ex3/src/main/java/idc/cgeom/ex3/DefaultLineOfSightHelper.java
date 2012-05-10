@@ -79,6 +79,7 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
         {
             if (isBlockedBy(p1, p2, triangle))
                 return false;
+
         }
         return true;
     }
@@ -96,19 +97,88 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
         if(p1_dist * p2_dist > 0) // points are on the same side of the plane
             return false;
 
-        double t = -1 * (D + A*p1.x() + B * p1.y() + C * p1.z()) / (A * (p2.x() - p1.x()) + B *(p2.y() - p1.y())+ C *(p2.z() - p1.z()));
+        double t = 1 * (D + A*p1.x() + B * p1.y() + C * p1.z()) / (A * (p1.x() - p2.x()) + B *(p1.y() - p2.y())+ C *(p1.z() - p2.z()));
 
         Point_dt intersection_p = new Point_dt(
                 p1.x() + (p2.x() - p1.x()) * t,
                 p1.y() + (p2.y() - p1.y()) * t,
                 p1.z() + (p2.z() - p1.z()) * t);
 
+
         Point3d p = new Point3d(intersection_p.x(),intersection_p.y(),intersection_p.z());
         Point3d a = new Point3d(triangle.p1().x(),triangle.p1().y(),triangle.p1().z());
         Point3d b = new Point3d(triangle.p2().x(),triangle.p2().y(),triangle.p2().z());
         Point3d c = new Point3d(triangle.p3().x(),triangle.p3().y(),triangle.p3().z());
 
-        return pointInTriangle(p,a,b,c);
+        Point3d pp1 = new Point3d(p1.x(),p1.y(),p1.z());
+        Point3d pp2 = new Point3d(p2.x(),p2.y(),p2.z());
+
+        //Point3d intersection_p1 = getIntersectionPoint(pp1,pp2,a,b,c);
+
+        return pointInTriangleB(p,a,b,c);
+
+        //return pointInTriangle(p,a,b,c);
+    }
+
+    private Point3d getIntersectionPoint(Point3d p1 ,Point3d p2, Point3d a,Point3d b,Point3d c)
+    {
+        Vector3d vectorBA = new Vector3d(b.x - a.x,b.y - a.y,b.z - a.z);
+        Vector3d vectorCA = new Vector3d(c.x - a.x,c.y - a.y,c.z - a.z);
+
+        Vector3d N = new Vector3d();
+        N.cross(vectorBA,vectorCA);
+        N.normalize();
+
+        Vector3d vectorAX = new Vector3d(a.x - p1.x,a.y - p1.y,a.z - p1.z);
+
+        double d = N.dot(vectorAX);
+
+        Vector3d vectorYX = new Vector3d(p2.x - p1.x,p2.y - p1.y,p2.z - p1.z);
+        double e = N.dot(vectorYX);
+
+
+        if( e!=0 )
+        {
+            vectorYX.scale(d/e);
+            p1.add(vectorYX);
+            return p1;
+            //O = X + W * d/e;          // одна точка
+        }
+        else if( d==0)
+        {
+            p1.add(vectorYX);
+            return p1;
+            //O =X + W * (anything)     // прямая принадлежит плоскости
+        }
+        else
+            return null;                // прямая параллельна плоскости
+    }
+
+    // From http://www.blackpawn.com/texts/pointinpoly/default.html
+    private boolean pointInTriangleB(Point3d p , Point3d a,Point3d b,Point3d c)
+    {
+        // Compute vectors
+//        v0 = C - A
+//        v1 = B - A
+//        v2 = P - A
+        Vector3d vectorBA = new Vector3d(b.x - a.x,b.y - a.y,b.z - a.z); //v0
+        Vector3d vectorCA = new Vector3d(c.x - a.x,c.y - a.y,c.z - a.z); //v1
+        Vector3d vectorPA = new Vector3d(p.x - a.x,p.y - a.y,p.z - a.z); //v2
+
+        // Compute dot products
+        double dot00 = vectorBA.dot(vectorBA);
+        double dot01 = vectorBA.dot(vectorCA);
+        double dot02 = vectorBA.dot(vectorPA);
+        double dot11 = vectorCA.dot(vectorCA);
+        double dot12 = vectorCA.dot(vectorPA);
+
+        // Compute barycentric coordinates
+        double invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+        double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        double v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        // Check if point is in triangle
+        return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 
     private boolean sameSide(Point3d p1 ,Point3d p2, Point3d a,Point3d b)
