@@ -2,4 +2,7 @@
 target
 **/target
 *.iml
+*.project
+*.classpath
+*.gitignore
 **/**/.svn
