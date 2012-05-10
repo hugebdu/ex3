@@ -1,9 +1,10 @@
 package idc.cgeom.ex3;
 
+import com.google.common.base.Function;
 import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.sun.j3d.utils.behaviors.picking.Intersect;
-
 import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
@@ -14,6 +15,9 @@ import javax.vecmath.Vector3d;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
+import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Iterables.transform;
+
 /**
  * Created by IntelliJ IDEA.
  * User: daniels
@@ -23,9 +27,28 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
 {
     private final Delaunay_Triangulation triangulation;
 
+    private final Function<Point_dt, Point_dt> elevation = new Function<Point_dt, Point_dt>()
+    {
+        @Override
+        public Point_dt apply(Point_dt input)
+        {
+            double z = triangulation.z(input.x(), input.y());
+            return new Point_dt(
+                    input.x(),
+                    input.y(),
+                    input.z() + z);
+        }
+    };
+
     private DefaultLineOfSightHelper(Delaunay_Triangulation triangulation)
     {
         this.triangulation = triangulation;
+    }
+
+    @Override
+    public ImmutableCollection<Point_dt> elevate(Iterable<Point_dt> points)
+    {
+        return copyOf(transform(points, elevation));
     }
 
     public ImmutableList<Triangle_dt> getInBetweenRouteTriangles(Point_dt source, Point_dt target)
@@ -134,7 +157,7 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
 
         //Point3d intersection_p1 = getIntersectionPoint(pp1,pp2,a,b,c);
 
-        return pointInTriangle3(p,a,b,c);
+        return pointInTriangle3(p, a, b, c);
         //return pointInTriangleB(p,a,b,c);
         //return pointInTriangle(p,a,b,c);
     }

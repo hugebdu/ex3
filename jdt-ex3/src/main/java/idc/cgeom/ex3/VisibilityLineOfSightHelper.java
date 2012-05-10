@@ -1,5 +1,6 @@
 package idc.cgeom.ex3;
 
+import com.google.common.collect.ImmutableCollection;
 import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import gui.Visibility;
@@ -22,5 +23,11 @@ public class VisibilityLineOfSightHelper implements LineOfSightHelper
     public boolean seenByEachOther(Point_dt p1, Point_dt p2)
     {
         return visibility.los(p1, p2);
+    }
+
+    @Override
+    public ImmutableCollection<Point_dt> elevate(Iterable<Point_dt> points)
+    {
+        throw new UnsupportedOperationException();
     }
 }

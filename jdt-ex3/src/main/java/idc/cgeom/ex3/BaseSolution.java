@@ -19,6 +19,6 @@ public abstract class BaseSolution implements Solution
 
     protected LineOfSightHelper createLineOfSightHelper(Delaunay_Triangulation triangulation)
     {
-        return new VisibilityLineOfSightHelper(triangulation);
+        return DefaultLineOfSightHelper.on(triangulation);
     }
 }
