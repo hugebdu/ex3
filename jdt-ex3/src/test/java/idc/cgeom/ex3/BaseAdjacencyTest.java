@@ -22,7 +22,7 @@ public abstract class BaseAdjacencyTest
     protected static final Point_dt DIAMOND1 = new Point_dt(1, 0);
     protected static final Point_dt DIAMOND2 = new Point_dt(2, 0);
     protected static final Point_dt DIAMOND3 = new Point_dt(3, 0);
-    protected final LineOfSightHelper helperMock = mock(LineOfSightHelper.class);
+    protected final DefaultLineOfSightHelper helperMock = mock(DefaultLineOfSightHelper.class);
 
     @Before
     public void setUp() throws Exception

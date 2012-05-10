@@ -1,8 +1,13 @@
 package idc.cgeom.ex3.bnb;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import delaunay_triangulation.Point_dt;
 import idc.cgeom.ex3.AdjacencyMatrix;
 import idc.cgeom.ex3.BaseAdjacencyTest;
+import idc.cgeom.ex3.bnb.BranchAndBoundSolution.Node;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -23,6 +28,13 @@ import static org.junit.Assert.*;
 public class BranchAndBoundSolutionTest extends BaseAdjacencyTest
 {
     private final BranchAndBoundSolution solution = new BranchAndBoundSolution();
+
+    @Before
+    public void setUpSolution() throws Exception
+    {
+        solution.head = null;
+        solution.current = null;
+    }
 
     @Test
     public void testMakeGuardPickingIterator_HasDiamondsGuardedByOneGuard() throws Exception
@@ -51,6 +63,47 @@ public class BranchAndBoundSolutionTest extends BaseAdjacencyTest
         assertThat(iteratorAsList.get(0), is((Set<Guard>)newHashSet(find(matrix.guards(), thatWraps(GUARD2)))));
         assertThat(iteratorAsList.get(1), is((Set<Guard>)newHashSet(find(matrix.guards(), thatWraps(GUARD1)))));
         assertThat(iteratorAsList.get(2), is((Set<Guard>)newHashSet(find(matrix.guards(), thatWraps(GUARD3)))));
+    }
 
+    @Test
+    public void testNode_GetNumOfGuardsUsedSoFar() throws Exception
+    {
+        Tree<Node> subTree3 = new Tree<Node>(nodeWithNumOfGuards(3));
+        Tree<Node> subTree2 = subTree3.setAsParent(nodeWithNumOfGuards(2));
+        solution.head = subTree2.setAsParent(nodeWithNumOfGuards(1));
+        
+        assertThat(subTree3.getHead().getNumOfGuardsUsedSoFar(), is(6));
+        assertThat(subTree2.getHead().getNumOfGuardsUsedSoFar(), is(3));
+    }
+
+    private Node nodeWithNumOfGuards(int guardsCount)
+    {
+        ImmutableSet.Builder<Guard> builder = ImmutableSet.builder();
+
+        for (int i = 0; i < guardsCount; i++)
+            builder.add(new GuardStub());
+
+        return solution.new Node(builder.build(), null, null);
+    }
+
+    static class GuardStub implements Guard
+    {
+        @Override
+        public ImmutableCollection<AdjacencyMatrix.Diamond> guardingDiamonds()
+        {
+            return ImmutableList.of();
+        }
+
+        @Override
+        public boolean isGuarding(AdjacencyMatrix.Diamond diamond)
+        {
+            return false;
+        }
+
+        @Override
+        public Point_dt getPointDt()
+        {
+            return null;
+        }
     }
 }

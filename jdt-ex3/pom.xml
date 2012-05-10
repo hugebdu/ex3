@@ -44,7 +44,6 @@
             <groupId>idc.edu</groupId>
             <artifactId>jdt-gui</artifactId>
             <version>1.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>java3d</groupId>

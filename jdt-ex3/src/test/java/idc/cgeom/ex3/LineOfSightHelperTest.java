@@ -56,7 +56,7 @@ public class LineOfSightHelperTest
         Point_dt source = new Point_dt(137, 437);
         Point_dt target = new Point_dt(508, 310);
 
-        List<Triangle_dt> result = LineOfSightHelper.on(triangulation)
+        List<Triangle_dt> result = DefaultLineOfSightHelper.on(triangulation)
                 .getInBetweenRouteTriangles(source, target);
 
         Visibility visibility = new Visibility(triangulation);
@@ -72,7 +72,7 @@ public class LineOfSightHelperTest
     {
         Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
         Visibility visibility = new Visibility(triangulation);
-        LineOfSightHelper helper = LineOfSightHelper.on(triangulation);
+        DefaultLineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
 
         List<Point_dt> guards = loadPoints(GUARDS_DATA_TSIN);
         List<Point_dt> diamonds = loadPoints(DIAMONDS_DATA_TSIN);
@@ -154,8 +154,8 @@ public class LineOfSightHelperTest
         return new Delaunay_Triangulation(file);        
     }
 
-    private LineOfSightHelper makeHelper(Point_dt ... points)
+    private DefaultLineOfSightHelper makeHelper(Point_dt ... points)
     {
-        return LineOfSightHelper.on(new Delaunay_Triangulation(points));
+        return DefaultLineOfSightHelper.on(new Delaunay_Triangulation(points));
     }
 }

@@ -1135,7 +1135,7 @@ public class Delaunay_Triangulation {
 		fw.close();
 	}
 
-	private static Point_dt[] read_file(String file) throws Exception {
+	public static Point_dt[] read_file(String file) throws Exception {
 		if (file.substring(file.length() - 4).equals(".smf")
 				| file.substring(file.length() - 4).equals(".SMF"))
 			return read_smf(file);
@@ -1143,7 +1143,7 @@ public class Delaunay_Triangulation {
 			return read_tsin(file);
 	}
 
-	private static Point_dt[] read_tsin(String tsinFile) throws Exception {
+	public static Point_dt[] read_tsin(String tsinFile) throws Exception {
 		FileReader fr = new FileReader(tsinFile);
 		BufferedReader is = new BufferedReader(fr);
 		String s = is.readLine();
