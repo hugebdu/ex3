@@ -2,10 +2,13 @@ package idc.cgeom.ex3;
 
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
+import com.sun.j3d.utils.behaviors.picking.Intersect;
+
 import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
 
+import javax.media.j3d.PickSegment;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import java.awt.geom.Line2D;
@@ -82,6 +85,22 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
 
         }
         return true;
+    }
+
+    public boolean isBlockedBy2(Point_dt p1, Point_dt p2, Triangle_dt triangle)
+    {
+        Intersect inter = new Intersect();
+        PickSegment pick = new PickSegment(new Point3d(p1.x(), p1.y(), p1.z()), new Point3d(p2.x(), p2.y(), p2.z()));
+
+        Point3d[] trianglePoints = new Point3d[3];
+        trianglePoints[0] = new Point3d(triangle.p1().x(), triangle.p1().y(), triangle.p1().z());
+        trianglePoints[1] = new Point3d(triangle.p2().x(), triangle.p2().y(), triangle.p2().z());
+        trianglePoints[2] = new Point3d(triangle.p3().x(), triangle.p3().y(), triangle.p3().z());
+
+        double[] toReturn = new double[3];
+        boolean segmentAndTriangle = inter.segmentAndTriangle(pick, trianglePoints, 0, toReturn);
+
+        return segmentAndTriangle;
     }
 
     public boolean isBlockedBy(Point_dt p1, Point_dt p2, Triangle_dt triangle)
