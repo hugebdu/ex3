@@ -5,6 +5,8 @@ import edu.idc.dtdc.data.Point;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Created by IntelliJ IDEA.
  * User: daniels
@@ -20,4 +22,5 @@ public class MergeHull implements ConvexHull
         //TODO: Implement
         return null;
     }
+
 }
