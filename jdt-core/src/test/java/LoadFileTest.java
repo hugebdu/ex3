@@ -25,13 +25,14 @@ public class LoadFileTest
     @Test
     public void testCalcTime() throws Exception
     {
-        int NUMBUR_OF_TESTS = 100;
+        int NUMBUR_OF_TESTS = 5;
         String file = getClass().getResource("terra_13000.tsin").getFile();
         long[] times = new long[NUMBUR_OF_TESTS];
         long totalTime = 0;
 
         for (int i = 0;i<NUMBUR_OF_TESTS;i++)
         {
+            System.out.println(String.format("Execution #%s", i));
             long startTimeMs = System.currentTimeMillis();
             Delaunay_Triangulation triangulation = new Delaunay_Triangulation(file);
             times[i]=System.currentTimeMillis() - startTimeMs;
