@@ -16,6 +16,7 @@
         <module>jdt-real-time</module>
         <module>jdt-algorithms</module>
         <module>jdt-ex3</module>
+        <module>jdt-parallel</module>
     </modules>
 
     <build>
