@@ -1,6 +1,9 @@
 package edu.idc.dtdc.utils;
 
+import edu.idc.dtdc.data.Point;
+
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,4 +15,5 @@ import java.io.IOException;
 public interface DataGenerator {
     void generateData(int numberOfPoint);
     void saveData(String fileName)  throws IOException;
+    Set<Point> getData();
 }

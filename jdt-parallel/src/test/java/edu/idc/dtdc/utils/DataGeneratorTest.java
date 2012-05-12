@@ -1,6 +1,11 @@
 package edu.idc.dtdc.utils;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,10 +18,20 @@ public class DataGeneratorTest {
     @Test
     public void testDefaultDataGenerator() throws Exception
     {
-        String fileName = "testData.tsin";
-        int numberOfPoints = 10000;
+        String fileName = "testData1.tsin";
+        int numberOfPoints = 1000;
         DefaultDataGenerator dataGenerator = new DefaultDataGenerator();
         dataGenerator.generateData(numberOfPoints);
         dataGenerator.saveData(fileName);
+    }
+
+
+    @Test
+    public void testDefaultDataGeneratorExpectedSize() throws Exception
+    {
+        int numberOfPoints = 10000;
+        DefaultDataGenerator dataGenerator = new DefaultDataGenerator();
+        dataGenerator.generateData(numberOfPoints);
+        assertThat(dataGenerator.getData().size(), is(numberOfPoints));
     }
 }

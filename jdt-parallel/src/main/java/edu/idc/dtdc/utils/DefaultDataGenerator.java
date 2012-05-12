@@ -3,6 +3,7 @@ package edu.idc.dtdc.utils;
 import edu.idc.dtdc.data.Point;
 import sun.plugin.dom.exception.InvalidStateException;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -54,6 +55,11 @@ public class DefaultDataGenerator implements DataGenerator {
         }
 
         fileStream.close();
+    }
+
+    @Override
+    public Set<Point> getData() {
+        return points;
     }
 
     protected Point getNextPoint()
