@@ -123,7 +123,13 @@ public class RangeTest
         assertThat(range(0, 5).subList(list), is(list));
         assertThat(range(0, 25).subList(list), is(list));
         assertList(range(0, 0).subList(list), "a");
+        assertList(range(0, 1).subList(list), "a", "b");
         assertList(range(5, 5).subList(list), "f");
+        assertList(range(5, 5).subList(list), "f");
+        assertList(range(5, 6).subList(list), "f");
+        assertList(range(4, 6).subList(list), "e", "f");
+        assertList(range(1, 1).subList(list), "b");
+        assertList(range(1, 2).subList(list), "b", "c");
     }
 
     @Test
