@@ -1,6 +1,7 @@
 package idc.cgeom.ex3;
 
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import gui.Visibility;
@@ -28,6 +29,6 @@ public class VisibilityLineOfSightHelper implements LineOfSightHelper
     @Override
     public ImmutableCollection<Point_dt> elevate(Iterable<Point_dt> points)
     {
-        throw new UnsupportedOperationException();
+        return ImmutableList.copyOf(points);
     }
 }
