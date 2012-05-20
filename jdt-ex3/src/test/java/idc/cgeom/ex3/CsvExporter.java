@@ -21,6 +21,7 @@ public class CsvExporter
     {
         Delaunay_Triangulation triangulation = new Delaunay_Triangulation(resourceToAbsoluteFilePath("/test_data.tsin"));
         LineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
+        //helper = new VisibilityLineOfSightHelper(triangulation);
         Point_dt[] guards = readPointsToArray(resourceToURL("/G1.tsin"));
         Point_dt[] diamonds = readPointsToArray(resourceToURL("/C1.tsin"));
 
