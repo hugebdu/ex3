@@ -1,6 +1,7 @@
 .idea
 target
 **/target
+**/lib
 *.iml
 *.project
 *.classpath

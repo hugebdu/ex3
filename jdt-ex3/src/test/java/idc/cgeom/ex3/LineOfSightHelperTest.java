@@ -3,13 +3,10 @@ package idc.cgeom.ex3;
 import delaunay_triangulation.Delaunay_Triangulation;
 import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
-import gui.Visibility;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -48,24 +45,6 @@ public class LineOfSightHelperTest extends BaseTest
         assertThat(result.size(), is(2));
     }
 
-    @Test @Ignore
-    public void testGetInBetweenRouteTriangles_FromFile() throws Exception
-    {
-        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
-
-        Point_dt source = new Point_dt(137, 437);
-        Point_dt target = new Point_dt(508, 310);
-
-        List<Triangle_dt> result = DefaultLineOfSightHelper.on(triangulation)
-                .getInBetweenRouteTriangles(source, target);
-
-        Visibility visibility = new Visibility(triangulation);
-        visibility.los(source, target);
-        
-        assertThat(result.size(), is(visibility._tr.size()));
-        assertThat(result, hasItems(visibility._tr.toArray(new Triangle_dt[visibility._tr.size()])));
-    }
-
     @Test
     public void testIsBlockedBy_Blocked() throws Exception
     {
@@ -84,19 +63,6 @@ public class LineOfSightHelperTest extends BaseTest
         ).isBlockedBy(p1,p2,t);
 
         assertTrue(blocked);
-    }
-
-    @Test
-    public void testIsBlockedBy_SpecificPoint() throws Exception
-    {
-        Delaunay_Triangulation triangulation = loadTriangulation(TEST_DATA_TSIN);
-        Visibility visibility = new Visibility(triangulation);
-        DefaultLineOfSightHelper helper = DefaultLineOfSightHelper.on(triangulation);
-
-        Point_dt guard = new Point_dt(174172.0,1008059.0,5.0);
-        Point_dt diamond = new Point_dt(149170.0,1043466.0,30.0);
-
-        assertTrue(helper.seenByEachOther(diamond, guard));
     }
 
     @Test

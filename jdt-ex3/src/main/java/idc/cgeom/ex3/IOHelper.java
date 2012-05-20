@@ -9,19 +9,18 @@ import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
 import delaunay_triangulation.Point_dt;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Iterables.toArray;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
 
 /**
  * Created by IntelliJ IDEA.
@@ -96,5 +95,16 @@ public abstract class IOHelper
                 parseDouble(get(split, 1)),
                 parseDouble(get(split, 2))
         );
+    }
+
+    public static void writePoints(Collection<Point_dt> points, File file) throws IOException
+    {
+        PrintWriter writer = new PrintWriter(file);
+        writer.println(points.size());
+
+        for (Point_dt point : points)
+            writer.println(format("%s %s %s", point.x(), point.y(), point.z()));
+
+        writer.close();
     }
 }

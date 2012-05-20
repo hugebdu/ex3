@@ -103,7 +103,7 @@ public class DefaultLineOfSightHelper implements LineOfSightHelper
     {
         for (Triangle_dt triangle : getInBetweenRouteTriangles(p1, p2))
         {
-            if (isBlockedBy(p1, p2, triangle))
+            if (isBlockedBy2(p1, p2, triangle))
                 return false;
 
         }
